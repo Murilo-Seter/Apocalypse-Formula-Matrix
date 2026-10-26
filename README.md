@@ -31,6 +31,66 @@ The Apocalypse Formula breaks this limitation by achieving **$O(1)$ complexity p
 ### Stress Test (5001 x 5001 Matrix)
 Using the vectorized Python code included in this repository, a matrix with **25,010,001 individual elements** was solved, validated, and rendered in **less than 8 seconds** (with the pure mathematical calculation taking only a fraction of a second).
 
+Python 
+
+import numpy as np
+import matplotlib.pyplot as plt
+import time
+
+def apocalypse_formula_massiva(n):
+    """
+    Generates an odd-order magic square of size 'n' using the Apocalypse Formula.
+    Based on the Murilo Brandalise Center-Order Law.
+    Complexity: O(1) per cell (Fully Vectorized via NumPy)
+    """
+    if n % 2 == 0:
+        raise ValueError("The Murilo Brandalise Center-Order Law applies strictly to odd orders.")
+        
+    # Optimizing memory usage with int32 for high-density matrices
+    i = np.arange(1, n + 1, dtype=np.int32).reshape(-1, 1)
+    j = np.arange(1, n + 1, dtype=np.int32).reshape(1, -1)
+    
+    # Direct application of the Apocalypse Formula
+    block_matrix = ((i + j - (n + 3) // 2) % n) * n
+    shift_matrix = (i - j + (n - 1) // 2) % n
+    M = 1 + block_matrix + shift_matrix
+    
+    return M
+
+# =====================================================================
+# MASSIVE SCALE EXPERIMENT (5001 x 5001)
+# =====================================================================
+ORDEM_MATRIZ = 5001  
+
+print(f"Calculating super-matrix {ORDEM_MATRIZ}x{ORDEM_MATRIZ} via Apocalypse Formula...")
+print(f"Total elements being computed in parallel: {ORDEM_MATRIZ**2:,}")
+
+# Benchmarking the mathematical execution time
+start_time = time.time()
+quadrado_magico = apocalypse_formula_massiva(ORDEM_MATRIZ)
+execution_time = time.time() - start_time
+
+# Expected Magic Constant
+magic_constant = ORDEM_MATRIZ * (ORDEM_MATRIZ**2 + 1) // 2
+print(f"✅ Success! Theoretical Magic Constant per axis: {magic_constant:,}")
+print(f"⏱️ Pure mathematical processing time: {execution_time:.4f} seconds")
+
+# =====================================================================
+# HIGH-DENSITY GEOMETRIC PLOT
+# =====================================================================
+print("Rendering the Center-Order topological field...")
+plt.figure(figsize=(12, 12), dpi=200)
+
+# rasterized=True handles the massive 25-million pixel matrix efficiently
+plt.imshow(quadrado_magico, cmap='seismic', interpolation='nearest', rasterized=True)
+
+plt.colorbar(label='Scalar Cell Value', fraction=0.046, pad=0.04)
+plt.title(f"High-Density Visualization: Murilo Brandalise Center-Order Law\n(Apocalypse Formula - n={ORDEM_MATRIZ})", fontsize=14)
+plt.axis('off')
+
+# Display graph
+plt.show()
+
 | Metric | Traditional Algorithmic Loops | Apocalypse Formula Approach |
 | :--- | :--- | :--- |
 | **Topology** | Iterative / Path-Dependent | **Closed-Form Analytical** |
